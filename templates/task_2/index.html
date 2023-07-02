@@ -1,0 +1,50 @@
+{% include 'index.html' %}
+
+<h1>Задача 2</h1>
+
+<div>
+    <p>
+        Для решения этой задачи использовал модуль django-fsm, который позволяет легко добавить поддержку конечных
+        автоматов в Django модели.
+    </p>
+</div>
+
+<hr>
+
+<h2>Обновленная модель</h2>
+
+<pre><code id="python_code">
+class Lead(models.Model):
+    name = models.CharField(
+        max_length=255,
+        db_index=True,
+        verbose_name='Имя',
+    )
+    state = FSMField(
+        default=LeadState.STATE_NEW,
+        verbose_name='Состояние',
+    )
+
+    @transition(field=state, source=LeadState.STATE_NEW, target=LeadState.STATE_IN_PROGRESS)
+    def start_work(self):
+        print('''Метод бизнес логики для перехода из состояния `Новый` в `В работе`''')
+
+    @transition(field=state, source=LeadState.STATE_IN_PROGRESS, target=LeadState.STATE_POSTPONED)
+    def postpone_work(self):
+        print('''Метод бизнес логики для перехода из состояния `В работе` в `Приостановлен`''')
+
+    @transition(field=state, source=LeadState.STATE_IN_PROGRESS, target=LeadState.STATE_DONE)
+    def complete_work(self):
+        print('''Метод бизнес логики для перехода из состояния `В работе` в `Завершен`''')
+
+    @transition(field=state, source=LeadState.STATE_POSTPONED, target=LeadState.STATE_IN_PROGRESS)
+    def resume_work(self):
+        print('''Метод бизнес логики для перехода из состояния `Приостановлен` в `В работе`''')
+
+    @transition(field=state, source=LeadState.STATE_POSTPONED, target=LeadState.STATE_DONE)
+    def finish_work(self):
+        print('''Метод бизнес логики для перехода из состояния `Приостановлен` в `Завершен`''')
+
+    def __str__(self):
+        return self.name
+</code></pre>

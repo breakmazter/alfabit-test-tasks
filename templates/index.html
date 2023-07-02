@@ -1,0 +1,38 @@
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.61.0/lib/codemirror.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/codemirror@5.61.0/addon/runmode/runmode-standalone.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/codemirror@5.61.0/mode/python/python.min.js"></script>
+</head>
+
+<div>
+    <a href="/task/1">First task</a>
+</div>
+
+<div>
+    <a href="/task/2">Second task</a>
+</div>
+
+<div>
+    <a href="/task/3">Third task</a>
+</div>
+
+<div>
+    <a href="/task/4">Fourth task</a>
+</div>
+
+<script type="text/javascript">
+    window.onload = function () {
+        var codeElement = document.getElementById('python_code');
+        codeElement.classList.add('cm-s-default');
+        var code = codeElement.innerText;
+
+        codeElement.innerHTML = "";
+
+        CodeMirror.runMode(
+            code,
+            'python',
+            codeElement
+        );
+    };
+</script>

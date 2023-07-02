@@ -1,0 +1,49 @@
+{% include 'index.html' %}
+
+<h1>Задача 1</h1>
+
+<div>
+    <p>
+        Это можно сделать используя декоратор навесив его на класс модели. Сам декоратор получает все поля класса
+        которые удовлетворяют определенному условию в текущей реализации это аргумент field_prefix(далее можно
+        рассширить эти правила для более гибкой работы, например использовать регулярные выражения или передовать не
+        один префикс а список префиксов или правил). Далее генерируются методы для класса, конец.
+    </p>
+</div>
+
+<hr>
+
+<h2>Декоратор</h2>
+
+<pre><code id="python_code">
+def add_get_methods(**kwargs):
+    field_prefix = kwargs.get('field_prefix', '')
+
+    def decorator(cls):
+        fields = {name: value for name, value in cls.__dict__.items() if field_prefix in name}
+        for name, value in fields.items():
+            setattr(
+                cls,
+                f'''get_{name.replace(field_prefix, '').lower()}''',
+                classmethod(lambda _, value=value: cls.objects.get(pk=value)),
+            )
+        return cls
+
+    return decorator
+
+
+@add_get_methods(field_prefix='STATE_')
+class DeliveryState(models.Model):
+    class Meta:
+        verbose_name = 'Состояние доставки'
+        verbose_name_plural = 'Состояния доставок'
+
+    STATE_NEW = 1  # Новая
+    STATE_ISSUED = 2  # Выдана курьеру
+    STATE_DELIVERED = 3  # Доставлена
+    STATE_HANDED = 4  # Курьер сдал
+    STATE_REFUSED = 5  # Отказ
+    STATE_PAID_REFUSED = 6  # Отказ с оплатой курьеру
+    STATE_COMPLETE = 7  # Завершена
+    STATE_NONE = 8  # Не определено
+</code></pre>

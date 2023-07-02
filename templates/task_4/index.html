@@ -1,0 +1,30 @@
+{% include 'index.html' %}
+
+<h1>Задача 4</h1>
+
+<div>
+    <p>
+        Для решения этой задачи использовал рекурсию для возможности работать с любой глубиной словаря.
+    </p>
+</div>
+
+<hr>
+
+<h2>Функция</h2>
+
+<pre><code id="python_code">
+def print_data_structure(data, indent=0):
+    if isinstance(data, dict):
+        for key, value in data.items():
+            children = value.get('children', [])
+            if children:
+                print(' ' * indent + str(key))
+                print_data_structure(children, indent + 4)
+            else:
+                print(' ' * indent + str(value))
+    elif isinstance(data, list):
+        for item in data:
+            print_data_structure(item, indent)
+    else:
+        print(' ' * indent + str(data))
+</code></pre>
